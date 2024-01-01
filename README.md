@@ -19,6 +19,7 @@ The SWE4538-Project is a web application designed for coffee enthusiasts. It pro
 
 - **User Authentication System:**
   - Secure access to personalized dashboards.
+  - Create, Read, Update and Delete own user profiles.
 
 - **Recipe CRUD Operations:**
   - Create, Read, Update, and Delete coffee recipes.
@@ -46,7 +47,9 @@ To run the project locally, follow these steps:
 
  ```bash
    cd server
+
    yarn
+
    yarn dev 
 ```
 
@@ -57,33 +60,4 @@ To run the project locally, follow these steps:
 4. **Start the Application:**
 
 5. **Access the Application:**
-- Open a web browser and go to `http://localhost:your_port` (replace `your_port` with the specified port).
-
-## Project Components
-
-- **Routes:**
-- Define RESTful routes for managing recipes.
-
-- **Controllers:**
-- Implement business logic for recipe-related actions.
-
-- **Models:**
-- Define MongoDB schemas for User and Recipe.
-
-## Dependencies
-
-- **Express.js Middleware:**
-- Used for authentication, file uploads, and other essential functionalities.
-
-- **External Libraries:**
-- Libraries for handling audio and image uploads.
-
-## Circular Dependency Resolution
-
-The project addresses circular dependency warnings for improved stability.
-
-## Future Development
-
-Potential enhancements include user profile management, advanced search functionality, and continuous improvements to UI/UX.
-
-Feel free to explore and contribute to the project!
+- Open a web browser and go to `http://localhost:3000`
