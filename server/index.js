@@ -5,12 +5,14 @@ const cookieParser = require("cookie-parser"); //parse cookies that are sent wit
 const session = require("express-session");
 const flash = require("express-flash");
 const passport = require("passport");
+const path = require("path");
 require("./config/passport")(passport);
+require('dotenv').config();
 
 app.use(flash());
 app.use(
   session({
-    secret: "secret",
+    secret: process.env.SESSION_SECRET,
     resave: false, // we can resave the session if nothing is change
     saveUninitialized: false, //we can save empty value
   })
@@ -37,13 +39,18 @@ app.use(
 );
 
 // routing information
-const routes = require("./routes/auth.routes");
+const routes = require("./routes/auth.routes.js");
+const userRoutes = require("./routes/user.routes.js");
+const taskRoutes = require("./routes/task.routes.js");
 
-//app.use(routes);
+app.use(routes);
+app.use(userRoutes);
+app.use(taskRoutes);
 
-const ensureAuthenticated = require("./middlewares/auth.middleware");
-app.get("/welcome", ensureAuthenticated, (req, res) => {
-  res.sendFile(__dirname + "/views/homePage.html");
+// Landing Page
+app.get("/landingPage", (req, res) => {
+  const filePath = path.join(__dirname, "../client/landingPage.html");
+  res.sendFile(filePath);
 });
 
 //Connect to DB

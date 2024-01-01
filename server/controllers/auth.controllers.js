@@ -2,62 +2,40 @@ const User = require("../models/User.model");
 const path = require("path");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
+require("../config/passport");
 
-// const users = []; // store the user info here
-
-// const initializePassport = require("../config/passport");
-// initializePassport(
-//   passport,
-//   email => users.find(user => user.email === email),
-//   id => users.find(user => user.id === id)
-//   );
-
+// fetch login page
 const getLogin = async (req, res) => {
-  const filePath = path.join(__dirname, "..", "views", "login.html");
+  const filePath = path.join(__dirname, "../../client/auth/login.html");
   res.sendFile(filePath);
 };
 
+// login logic
 const postLogin = (req, res, next) => {
   passport.authenticate("local", {
-    successRedirect: "/profiles",
+    successRedirect: "/dashboard",
     failureRedirect: "/login",
     failureFlash: true,
   })(req, res, next);
 };
 
+// fetch registration page
 const getRegister = async (req, res) => {
-  const filePath = path.join(__dirname, "..", "views", "register.html");
+  const filePath = path.join(__dirname, "../../client/auth/register.html");
   res.sendFile(filePath);
 };
 
+// registration logic
 const postRegister = async (req, res, next) => {
-  // try {
-  //   const hashedPassword = await bcrypt.hash(req.body.password, 10); // req.body.password ==> password should be exact match to register.html name=password,  10:how many time you want to generate hash. it's a standard default value
-  //   users.push({
-  //     id: Date.now().toString(),
-  //     name: req.body.username ,
-  //     email: req.body.email,
-  //     password: hashedPassword,
-  //   });
-
-  //   res.redirect("/login");
-  // } catch{
-  //   res.redirect("/register");
-  // }
-  // console.log(users); // show the user list
-
   const { email, password } = req.body;
   const name = req.body.username;
-
-  console.log(name);
-  console.log(email);
-  console.log(password);
-
   const errors = [];
+
   if (!name || !email || !password) {
     errors.push("All fields are required!");
   }
 
+  // all fields not given as input
   if (errors.length > 0) {
     res.status(400).json({ error: errors });
   } else {
@@ -99,28 +77,50 @@ const postRegister = async (req, res, next) => {
     });
   }
 };
-const getProfileInfos = async (req, res) => {
-  try {
-    const users = await User.find().select("-password");
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+
+const logout = async (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      res.json({ error: err });
+    } else res.redirect("/landingPage");
+  });
 };
 
-const updateProfile = async (req, res) => {
-  try {
-    const { name, currentPassword, newPassword, hobby, profession } = req.body;
-    console.log(newPassword);
+const getGoogleLogin = async (req, res, next) => {
+  passport.authenticate("google", { scope: ["profile", "email"] })(
+    req,
+    res,
+    next
+  );
+};
 
-    const userId = req.user.id;
-    const user = await User.findById(userId);
-    console.log(user);
+const getGoogleAuth = async (req, res, next) => {
+  passport.authenticate("google", {
+    successRedirect: "/dashboard",
+    failureRedirect: "/login",
+    failureFlash: true,
+  })(req, res, next);
+};
+
+const getForgotPass = async (req, res) => {
+  const filePath = path.join(__dirname, "../../client/auth/forgotPass.html");
+  res.sendFile(filePath);
+};
+
+const resetPass = async (req, res) => {
+  try {
+    const { email, oldPassword, newPassword } = req.body;
+
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+      return res.status(400).json({ error: "User does not exist." });
+    }
 
     // Update the password if provided
     if (newPassword) {
       const isPasswordValid = await bcrypt.compare(
-        currentPassword,
+        oldPassword,
         user.password
       );
 
@@ -132,120 +132,11 @@ const updateProfile = async (req, res) => {
       user.password = hashedPassword;
     }
 
-    // Update the designation if provided
-    if (hobby) {
-      user.hobby = hobby;
-    }
-
-    if (profession) {
-      user.profession = profession;
-    }
-
     await user.save();
 
-    res.json({ message: "User information updated successfully" });
+    res.json({ message: "User information reset successfully" });
   } catch (err) {
     return res.status(500).json({ msg: err.message });
-  }
-};
-
-const deleteProfile = async (req, res) => {
-  try {
-    const profileID = req.params.id;
-    const profileInfo = await User.findById(profileID);
-
-    if (!profileInfo) {
-      return res.status(404).json({ error: "Profile information not found" });
-    }
-
-    await profileInfo.deleteOne({ _id: profileID });
-
-    res.json({ message: "Profile information deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// const getMediaPage = async (req, res) => {
-//   const filePath = path.join(__dirname, "..", "views", "mediaFiles.html");
-//   res.sendFile(filePath);
-// };
-
-const postProfileImage = async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: "No file provided" });
-    }
-    const photo = req.file.filename;
-
-    const userId = req.user.id;
-    const user = await User.findById(userId);
-    console.log(user);
-
-    if (photo) {
-      user.profile_image = photo;
-    }
-    await user.save();
-
-    res.json({ message: "Profile image updated successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-const postMultipleImages = async (req, res) => {
-  try {
-    if (!req.files) {
-      return res.status(400).json({ message: "No file provided" });
-    }
-
-    const photo = req.files.map((file) => file.filename);
-
-    const userId = req.user.id;
-    const user = await User.findById(userId);
-
-    if (photo) {
-      user.images = photo;
-    }
-    await user.save();
-
-    res.json({ message: "Multiple images updated successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-const getMultipleImages = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const user = await User.findById(userId);
-    const images = user.images;
-
-    res.json({ images });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-const postAudioFile = async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: "No file provided" });
-    }
-    const audio = req.file.filename;
-
-    const userId = req.user.id;
-    const user = await User.findById(userId);
-    console.log(user);
-
-    if (audio) {
-      user.audio = audio;
-    }
-    await user.save();
-
-    res.json({ message: "Audio updated successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
   }
 };
 
@@ -254,12 +145,9 @@ module.exports = {
   getRegister,
   postLogin,
   postRegister,
-  getProfileInfos,
-  updateProfile,
-  deleteProfile,
-  postProfileImage,
-  postMultipleImages,
-  getMultipleImages,
-  postAudioFile,
-  //getMediaPage
+  logout,
+  getGoogleLogin,
+  getGoogleAuth,
+  getForgotPass,
+  resetPass,
 };

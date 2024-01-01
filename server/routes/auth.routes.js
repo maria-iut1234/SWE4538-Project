@@ -5,43 +5,21 @@ const {
   getRegister,
   postLogin,
   postRegister,
-  updateProfile,
-  getProfileInfos,
-  deleteProfile,
-} = require("../controllers/auth.controllers");
-
-// upload images
-const {
-  uploadProfileImage,
-  uploadAudioFile,
-} = require("../middlewares/image.middleware");
-const {
-  getMediaPage,
-  postProfileImage,
-  postMultipleImages,
-  getMultipleImages,
-  postAudioFile,
+  logout,
+  getGoogleLogin,
+  getGoogleAuth,
+  getForgotPass,
+  resetPass,
 } = require("../controllers/auth.controllers");
 
 router.get("/login", getLogin);
 router.post("/login", postLogin);
 router.get("/register", getRegister);
 router.post("/register", postRegister);
-router.get("/logout");
-router.get("/profiles", getProfileInfos);
-router.patch("/update-profile", updateProfile);
-router.delete("/delete-profile/:id", deleteProfile);
-router.get("/multiple_image", getMultipleImages);
-router.post("/upload/audio", uploadAudioFile.single("audio"), postAudioFile);
-router.post(
-  "/upload/single_image",
-  uploadProfileImage.single("image"),
-  postProfileImage
-);
-router.post(
-  "/upload/multiple_image",
-  uploadProfileImage.array("images", 5),
-  postMultipleImages
-);
+router.get("/logout", logout);
+router.get("/auth/google", getGoogleLogin);
+router.get("/auth/google/callback", getGoogleAuth);
+router.get("/forgotPass", getForgotPass);
+router.post("/resetPass", resetPass);
 
 module.exports = router;
