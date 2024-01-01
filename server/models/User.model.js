@@ -17,6 +17,10 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
   },
+  favouriteCoffee: {
+    type: String,
+    default: "",
+  },
   profile_image: {
     type: String,
     default: "",

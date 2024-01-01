@@ -1,4 +1,5 @@
 const path = require("path");
+const User = require("../models/User.model");
 
 // fetch dashboard page
 const getDashboard = async (req, res) => {
@@ -6,26 +7,30 @@ const getDashboard = async (req, res) => {
   res.sendFile(filePath);
 };
 
+const getProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+
+    res.status(200).send(user);
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
+};
+
 const updateProfile = async (req, res) => {
   try {
-    const { name, currentPassword, newPassword } = req.body;
+    const { name, favouriteCoffee } = req.body;
 
     const userId = req.user.id;
     const user = await User.findById(userId);
 
-    // Update the password if provided
-    if (newPassword) {
-      const isPasswordValid = await bcrypt.compare(
-        currentPassword,
-        user.password
-      );
+    if (name) {
+      user.name = name;
+    }
 
-      if (!isPasswordValid) {
-        return res.status(400).json({ error: "Current password is incorrect" });
-      }
-
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-      user.password = hashedPassword;
+    if (favouriteCoffee) {
+      user.favouriteCoffee = favouriteCoffee;
     }
 
     await user.save();
@@ -38,16 +43,17 @@ const updateProfile = async (req, res) => {
 
 const deleteProfile = async (req, res) => {
   try {
+    const userID = req.user.id;
     const profileID = req.params.id;
-    const profileInfo = await User.findById(profileID);
+    const user = await User.findById(userID);
 
-    if (!profileInfo) {
-      return res.status(404).json({ error: "Profile information not found" });
+    if (user._id != profileID) {
+      return res.status(404).json({ error: "You are not authenticated!" });
     }
 
-    await profileInfo.deleteOne({ _id: profileID });
+    await user.deleteOne({ _id: userID });
 
-    res.json({ message: "Profile information deleted successfully" });
+    res.json({ message: "User deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -79,4 +85,5 @@ module.exports = {
   postProfileImage,
   updateProfile,
   deleteProfile,
+  getProfile,
 };

@@ -39,13 +39,13 @@ app.use(
 );
 
 // routing information
-const routes = require("./routes/auth.routes.js");
+const authRoutes = require("./routes/auth.routes.js");
 const userRoutes = require("./routes/user.routes.js");
-const taskRoutes = require("./routes/task.routes.js");
+const recipeRoutes = require("./routes/recipe.routes.js");
 
-app.use(routes);
+app.use(authRoutes);
 app.use(userRoutes);
-app.use(taskRoutes);
+app.use(recipeRoutes);
 
 // Landing Page
 app.get("/landingPage", (req, res) => {

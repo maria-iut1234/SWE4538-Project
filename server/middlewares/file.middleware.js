@@ -18,9 +18,9 @@ const profileImage = multer.diskStorage({
   },
 });
 
-const taskImage = multer.diskStorage({
+const recipeImage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/taskImage");
+    cb(null, "uploads/recipeImage");
   },
   filename: function (req, file, cb) {
     cb(null, uuidv4() + "-" + Date.now() + path.extname(file.originalname));
@@ -29,11 +29,11 @@ const taskImage = multer.diskStorage({
 
 let uploadProfileImage = multer({ storage: profileImage, fileFilter });
 
-let uploadTaskImage = multer({ storage: taskImage, fileFilter });
+let uploadRecipeImage = multer({ storage: recipeImage, fileFilter });
 
 const audioStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/audio");
+    cb(null, "uploads/audioFiles");
   },
   filename: (req, file, cb) => {
     cb(null, Date.now().toString(16) + "-" + file.originalname + ".mp3");
@@ -44,4 +44,9 @@ const uploadAudioFile = multer({
   preservePath: true,
   storage: audioStorage,
 });
-module.exports = { uploadProfileImage, uploadAudioFile, uploadTaskImage };
+
+module.exports = {
+  uploadProfileImage,
+  uploadAudioFile,
+  uploadRecipeImage,
+};
