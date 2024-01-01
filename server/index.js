@@ -42,10 +42,12 @@ app.use(
 const authRoutes = require("./routes/auth.routes.js");
 const userRoutes = require("./routes/user.routes.js");
 const recipeRoutes = require("./routes/recipe.routes.js");
+const searchRoutes = require("./routes/search.routes.js");
 
 app.use(authRoutes);
 app.use(userRoutes);
 app.use(recipeRoutes);
+app.use(searchRoutes);
 
 // Landing Page
 app.get("/landingPage", (req, res) => {
