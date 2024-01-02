@@ -290,6 +290,54 @@ const downvoteRecipe = async (req, res) => {
   }
 };
 
+const deleteRecipeImages = async (req, res) => {
+  try {
+    const userID = req.user.id;
+    const recipeID = req.params.recipeID;
+
+    const user = await User.findById(userID);
+    const recipe = await Recipe.findById(recipeID);
+
+    if (recipe.user_id.toString() !== user._id.toString()) {
+      return res
+        .status(403)
+        .json({ error: "You do not have permission to update this recipe." });
+    }
+
+    recipe.images=[];
+
+    await recipe.save();
+
+    res.json({ message: "Recipe images deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const deleteRecipeAudios = async (req, res) => {
+  try {
+    const userID = req.user.id;
+    const recipeID = req.params.recipeID;
+
+    const user = await User.findById(userID);
+    const recipe = await Recipe.findById(recipeID);
+
+    if (recipe.user_id.toString() !== user._id.toString()) {
+      return res
+        .status(403)
+        .json({ error: "You do not have permission to update this recipe." });
+    }
+
+    recipe.audios=[];
+
+    await recipe.save();
+
+    res.json({ message: "Recipe images deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   createRecipe,
   updateRecipe,
@@ -297,6 +345,8 @@ module.exports = {
   getRecipe,
   updateRecipeImages,
   updateRecipeAudios,
+  deleteRecipeAudios,
+  deleteRecipeImages,
   upvoteRecipe,
   downvoteRecipe,
 };

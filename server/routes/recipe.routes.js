@@ -5,6 +5,8 @@ const {
   updateRecipe,
   updateRecipeAudios,
   updateRecipeImages,
+  deleteRecipeAudios,
+  deleteRecipeImages,
   deleteRecipe,
   getRecipe,
   createRecipe,
@@ -18,9 +20,10 @@ const {
   uploadAudioFile,
 } = require("../middlewares/file.middleware");
 
-router.post("/coffee/create", ensureAuthenticated, createRecipe);
 router.patch("/coffee/upvote/:recipeID", upvoteRecipe);
 router.patch("/coffee/downvote/:recipeID", downvoteRecipe);
+
+router.post("/coffee/create", ensureAuthenticated, createRecipe);
 router.get("/coffee/recipe/:recipeID", getRecipe);
 router.patch("/coffee/update/:recipeID", ensureAuthenticated, updateRecipe);
 router.delete(
@@ -28,6 +31,8 @@ router.delete(
   ensureAuthenticated,
   deleteRecipe
 );
+
+// media handling
 router.post(
   "/coffee/:recipeID/images",
   ensureAuthenticated,
@@ -40,5 +45,7 @@ router.post(
   uploadAudioFile.array("audios", 5),
   updateRecipeAudios
 );
+router.delete("/coffee/:recipeID/images", deleteRecipeImages);
+router.delete("/coffee/:recipeID/audios", deleteRecipeAudios);
 
 module.exports = router;
