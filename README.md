@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-The SWE4538-Project is a web application designed for coffee enthusiasts. It provides users with a platform to create, share, and explore various coffee-related concoctions. The application supports essential features like user authentication, CRUD operations for recipes, detailed recipe information, search functionalities to comb through the recipes and media upload functionality.
+The SWE4538-Project is a web application designed for coffee enthusiasts. It provides users with a platform to create, share, and explore various coffee-related concoctions. The application supports essential features like user authentication, CRUD operations for recipes, detailed recipe information, search functionalities to comb through the recipes, express your opinion via voting and media upload functionality.
 
 ## Technologies Used
 
