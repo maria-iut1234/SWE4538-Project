@@ -33,6 +33,9 @@ The SWE4538-Project is a web application designed for coffee enthusiasts. It pro
 - **Search Functionality:**
   - Users can search for any recipe by their tags, ingredients, ratings and names.
 
+- **Comment Section:**
+  - Users can freely express their opinions and suggestions for any recipe.
+
 - **Upvote and Downvote System:**
   - Users can express their appreciation for a recipe by upvoting it.
   - Downvote recipes if they find them less appealing.

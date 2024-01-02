@@ -43,11 +43,13 @@ const authRoutes = require("./routes/auth.routes.js");
 const userRoutes = require("./routes/user.routes.js");
 const recipeRoutes = require("./routes/recipe.routes.js");
 const searchRoutes = require("./routes/search.routes.js");
+const commentRoutes = require("./routes/comment.routes.js");
 
 app.use(authRoutes);
 app.use(userRoutes);
 app.use(recipeRoutes);
 app.use(searchRoutes);
+app.use(commentRoutes);
 
 // Landing Page
 app.get("/landingPage", (req, res) => {

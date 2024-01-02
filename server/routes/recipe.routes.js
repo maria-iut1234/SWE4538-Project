@@ -20,8 +20,8 @@ const {
   uploadAudioFile,
 } = require("../middlewares/file.middleware");
 
-router.patch("/coffee/upvote/:recipeID", upvoteRecipe);
-router.patch("/coffee/downvote/:recipeID", downvoteRecipe);
+router.patch("/coffee/upvote/:recipeID", ensureAuthenticated, upvoteRecipe);
+router.patch("/coffee/downvote/:recipeID", ensureAuthenticated, downvoteRecipe);
 
 router.post("/coffee/create", ensureAuthenticated, createRecipe);
 router.get("/coffee/recipe/:recipeID", getRecipe);
@@ -45,7 +45,7 @@ router.post(
   uploadAudioFile.array("audios", 5),
   updateRecipeAudios
 );
-router.delete("/coffee/:recipeID/images", deleteRecipeImages);
-router.delete("/coffee/:recipeID/audios", deleteRecipeAudios);
+router.delete("/coffee/:recipeID/images", ensureAuthenticated, deleteRecipeImages);
+router.delete("/coffee/:recipeID/audios", ensureAuthenticated, deleteRecipeAudios);
 
 module.exports = router;
