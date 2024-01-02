@@ -1,4 +1,4 @@
-# SWE4538-Project
+# SipNShare (SWE4538 Final Project)
 
 ## Project Overview
 
@@ -31,7 +31,12 @@ The SWE4538-Project is a web application designed for coffee enthusiasts. It pro
   - Users can upload multiple images and audio files for each recipe.
 
 - **Search Functionality:**
-  - Users can search for any recipe by their tags and names.
+  - Users can search for any recipe by their tags, ingredients, ratings and names.
+
+- **Upvote and Downvote System:**
+  - Users can express their appreciation for a recipe by upvoting it.
+  - Downvote recipes if they find them less appealing.
+  - A user can nullify their vote by clicking again.
 
 - **Security Measures:**
   - User authentication ensures only authorized users can perform recipe-related actions.
@@ -60,4 +65,4 @@ To run the project locally, follow these steps:
 4. **Start the Application:**
 
 5. **Access the Application:**
-- Open a web browser and go to `http://localhost:3000`
+- Open a web browser and go to `http://localhost:3000/landingPage`

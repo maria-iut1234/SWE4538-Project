@@ -23,6 +23,22 @@ const RecipeSchema = new mongoose.Schema({
     type: [String],
     default: [],
   },
+  upvotes: {
+    type: Number,
+    default: 0,
+  },
+  downvotes: {
+    type: Number,
+    default: 0,
+  },
+  upvotesBy: {
+    type: [String],
+    default: [],
+  },
+  downvotesBy: {
+    type: [String],
+    default: [],
+  },
   images: {
     type: [String],
     default: [],

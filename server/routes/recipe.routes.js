@@ -8,6 +8,8 @@ const {
   deleteRecipe,
   getRecipe,
   createRecipe,
+  upvoteRecipe,
+  downvoteRecipe,
 } = require("../controllers/recipe.controllers.js");
 
 const ensureAuthenticated = require("../middlewares/auth.middleware.js");
@@ -17,6 +19,8 @@ const {
 } = require("../middlewares/file.middleware");
 
 router.post("/coffee/create", ensureAuthenticated, createRecipe);
+router.patch("/coffee/upvote/:recipeID", upvoteRecipe);
+router.patch("/coffee/downvote/:recipeID", downvoteRecipe);
 router.get("/coffee/recipe/:recipeID", getRecipe);
 router.patch("/coffee/update/:recipeID", ensureAuthenticated, updateRecipe);
 router.delete(

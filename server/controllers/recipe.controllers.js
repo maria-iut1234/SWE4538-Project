@@ -206,6 +206,90 @@ const updateRecipeAudios = async (req, res) => {
   }
 };
 
+const upvoteRecipe = async (req, res) => {
+  try {
+    const recipeID = req.params.recipeID;
+    const userID = req.user.id;
+
+    const recipe = await Recipe.findById(recipeID);
+
+    if (!recipe) {
+      return res.status(404).json({ error: "Recipe not found" });
+    }
+
+    // Check if the user has already upvoted
+    const hasUpvoted = recipe.upvotesBy.includes(userID);
+
+    if (hasUpvoted) {
+      // User has already upvoted, nullify the upvote
+      recipe.upvotes -= 1;
+      recipe.upvotesBy = recipe.upvotesBy.filter((id) => id !== userID);
+    } else {
+      // Increment the upvotes count and add user to upvotesBy array
+      recipe.upvotes += 1;
+      recipe.upvotesBy.push(userID);
+
+      // If user had previously downvoted, nullify the downvote
+      if (recipe.downvotesBy.includes(userID)) {
+        recipe.downvotes -= 1;
+        recipe.downvotesBy = recipe.downvotesBy.filter((id) => id !== userID);
+      }
+    }
+
+    await recipe.save();
+
+    res.json({
+      message: "Recipe upvoted successfully",
+      upvotes: recipe.upvotes,
+      downvotes: recipe.downvotes,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const downvoteRecipe = async (req, res) => {
+  try {
+    const recipeID = req.params.recipeID;
+    const userID = req.user.id;
+
+    const recipe = await Recipe.findById(recipeID);
+
+    if (!recipe) {
+      return res.status(404).json({ error: "Recipe not found" });
+    }
+
+    // Check if the user has already downvoted
+    const hasDownvoted = recipe.downvotesBy.includes(userID);
+
+    if (hasDownvoted) {
+      // User has already downvoted, nullify the downvote
+      recipe.downvotes -= 1;
+      recipe.downvotesBy = recipe.downvotesBy.filter((id) => id !== userID);
+    } else {
+      // Increment the downvotes count and add user to downvotesBy array
+      recipe.downvotes += 1;
+      recipe.downvotesBy.push(userID);
+
+      // If user had previously upvoted, nullify the upvote
+      if (recipe.upvotesBy.includes(userID)) {
+        recipe.upvotes -= 1;
+        recipe.upvotesBy = recipe.upvotesBy.filter((id) => id !== userID);
+      }
+    }
+
+    await recipe.save();
+
+    res.json({
+      message: "Recipe downvoted successfully",
+      downvotes: recipe.downvotes,
+      upvotes: recipe.upvotes,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   createRecipe,
   updateRecipe,
@@ -213,4 +297,6 @@ module.exports = {
   getRecipe,
   updateRecipeImages,
   updateRecipeAudios,
+  upvoteRecipe,
+  downvoteRecipe,
 };
