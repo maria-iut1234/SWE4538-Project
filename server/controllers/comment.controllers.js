@@ -71,14 +71,21 @@ const deleteComment = async (req, res, next) => {
       return res.status(404).json({ error: "Recipe not found" });
     }
 
-    const comment = recipe.comments.id(commentID);
+    const comment = recipe.comments.find(comment => comment._id == commentID);
 
     if (!comment) {
       return res.status(404).json({ error: "Comment not found" });
     }
 
-    comment.remove();
-    await recipe.save();
+    if (comment.user_id !== req.user.id) {
+      return res.status(403).json({ error: "Permission denied. You are not the creator of the comment." });
+    }
+
+    const updatedRecipe = await Recipe.findOneAndUpdate(
+      { _id: recipeID },
+      { $pull: { comments: { _id: commentID } } },
+      { new: true }
+    );
 
     res.status(200).json({ message: "Comment deleted successfully" });
   } catch (error) {
@@ -96,20 +103,28 @@ const deleteReply = async (req, res, next) => {
       return res.status(404).json({ error: "Recipe not found" });
     }
 
-    const comment = recipe.comments.id(commentID);
+    const comment = recipe.comments.find(comment => comment._id == commentID);
 
     if (!comment) {
       return res.status(404).json({ error: "Comment not found" });
     }
 
-    const reply = comment.replies.id(replyID);
+    const comments = recipe.comments;
+    const reply = comment.replies.find((r) => r._id == replyID);
 
     if (!reply) {
       return res.status(404).json({ error: "Reply not found" });
     }
 
-    reply.remove();
-    await recipe.save();
+    if (reply.user_id !== req.user.id) {
+      return res.status(403).json({ error: "Permission denied. You are not the creator of the reply." });
+    }
+
+    const updatedRecipe = await Recipe.findOneAndUpdate(
+      { _id: recipeID, "comments._id": commentID },
+      { $pull: { "comments.$.replies": { _id: replyID } } },
+      { new: true }
+    );
 
     res.status(200).json({ message: "Reply deleted successfully" });
   } catch (error) {
