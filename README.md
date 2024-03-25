@@ -49,6 +49,8 @@
 
 <!-- ![image](https://github.com/Xer0Bytes/Innuo/assets/95132675/0dc4247f-0347-4f72-8c05-79d241e4cb0d) -->
 
+(This project was created for the academic course SWE4538 - Server Programming Lab).
+
 This is a web application designed for coffee enthusiasts. It provides users with a platform to create, share, and explore various coffee-related concoctions. 
 
 The application supports essential features like user authentication (both with the website and using Google OAuth2), CRUD operations for both recipes and users, detailed recipe information, search functionalities to comb through the vast number of recipes, the ability of users to express their opinion via upvotes and downvotes and media upload functionality for a user friendly view of the recipe contents.
